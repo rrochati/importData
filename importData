@@ -1,0 +1,31 @@
+function onOpen() {
+  var spreadsheet = SpreadsheetApp.getActive();
+  var menuItems = [
+    {name: 'Formatar ContaMaster', functionName: 'formataMaster'},
+    {name: 'Formatar Carga', functionName: 'formataCarga'},
+  ];
+  spreadsheet.addMenu('Atualizar Dados', menuItems);
+}
+
+function formataMaster() {
+  FormataDados('ContaMaster')
+}
+
+function formataCarga() {
+  FormataDados('Carga')
+}
+
+function FormataDados(aba) {
+  var spreadsheet = SpreadsheetApp.getActive().getSheetByName(aba);
+  var range = spreadsheet.getRange("A:A");
+  var data  = range.getValues();
+
+  for (var row = 0; row < data.length; row++) {
+    for (var col = 0; col < data[row].length; col++) {
+      data[row][col] = (data[row][col]).toString().replace(/\,/g, '\;');
+      data[row][col] = (data[row][col]).toString().replace(/\./g, ',');
+    }
+  }
+  range.setValues(data);
+  range.splitTextToColumns(';');
+};
